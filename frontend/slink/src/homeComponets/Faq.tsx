@@ -30,7 +30,8 @@ const Faqs = [
 ];
 
 const FAQ  = () => {
-  const [openIndex, setOpenIndex] = useState<null>(null)
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
 
 
   return (

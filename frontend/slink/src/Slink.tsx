@@ -6,7 +6,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import BN from "bn.js";
 import idl from "./idl/slink_program.json";
-import type { SlinkProgram } from "./types/slink_program";
+import  type { SlinkProgram } from "./types/slink_program";
 import { useState, useEffect } from "react";
 import type { Connection } from "@solana/web3.js";
 import { AnchorProvider, web3, Program } from "@coral-xyz/anchor";
@@ -41,7 +41,6 @@ const Slink = () => {
     const [showCreatedModal, setShowCreatedModal] = useState(false);
     const [createdSlinkData, setCreatedSlinkData] = useState<{
         id: string;
-        link: string;
     } | null>(null);
 
     const [allSlinks, setAllSlinks] = useState<SlinkAccount[]>([]);
@@ -106,11 +105,11 @@ const Slink = () => {
                 wallet.adapter.publicKey,
             );
 
-            const publicLink = `${window.location.origin}/slink/${slinkIdForSeed}`;
+           
 
             setCreatedSlinkData({
                 id: slinkIdForSeed,
-                link: publicLink,
+                
             });
 
             setShowCreatedModal(true);
@@ -492,21 +491,7 @@ const Slink = () => {
                         </div>
 
                         <p className="text-green-700 font-medium">Share Link</p>
-                        <div className="flex items-center justify-between bg-green-50 p-3 rounded-xl mb-4 border border-green-200">
-                            <span className="text-green-900 truncate">
-                                {createdSlinkData?.link}
-                            </span>
-                            <button
-                                className="text-green-700 font-semibold"
-                                onClick={() =>
-                                    navigator.clipboard.writeText(
-                                        createdSlinkData?.link || "",
-                                    )
-                                }
-                            >
-                                Copy
-                            </button>
-                        </div>
+                        
 
                         <button
                             className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold py-3 rounded-xl"
@@ -540,9 +525,9 @@ const createSlink = async (
 
     const tx = await program.methods
         .create(slink_id, lamports, description, claim_key)
-        .accounts({
+        .accountsPartial({
             creator,
-            slinkVault: pda,
+            slinkVault : pda,
             systemProgram: web3.SystemProgram.programId,
         })
         .rpc();
@@ -564,7 +549,7 @@ const claimSlink = async (
 
     const tx = await program.methods
         .claim(slink_id, claim_key)
-        .accounts({
+        .accountsPartial({
             signer: recipient,
             recipient,
             slinkVault: pda,
@@ -588,7 +573,7 @@ const cancelSlink = async (
 
     const tx = await program.methods
         .cancel(slink_id)
-        .accounts({
+        .accountsPartial({
             creator: creator,
             slinkVault: pda,
             systemProgram: web3.SystemProgram.programId,
